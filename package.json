@@ -1,5 +1,7 @@
 {
   "name": "@juit/libpq-build",
+  "version": "0.0.1",
+  "postgresql_version": "16.10",
   "private": true,
   "description": "Staticly built `node-libpq`",
   "author": "Brian M. Carlson",

@@ -4,14 +4,14 @@
   "postgresql_version": "16.10",
   "private": true,
   "description": "Staticly built `node-libpq`",
+  "scripts": {
+    "build": ".github/build.sh"
+  },
   "author": "Juit Developers <developers@juit.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/juitnow/juit-libpq.git"
-  },
-  "scripts": {
-    "build": "./.github/build.sh"
   },
   "bugs": {
     "url": "https://github.com/juitnow/juit-libpq/issues"

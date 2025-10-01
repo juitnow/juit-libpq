@@ -66,7 +66,7 @@ jobs:
       - name: Build Library
         run: |
           npm clean-install --ignore-scripts
-          ./build.sh
+          npm run build
           gh release upload "v${PACKAGE_VERSION}" ./package/*.tgz
         env:
           PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}
@@ -102,7 +102,7 @@ jobs:
       - name: Build Library
         run: |
           npm clean-install --ignore-scripts
-          ./build.sh
+          npm run build
           gh release upload "v${PACKAGE_VERSION}" ./package/*.tgz
         env:
           PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}

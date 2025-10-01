@@ -4,8 +4,19 @@
   "postgresql_version": "16.10",
   "private": true,
   "description": "Staticly built `node-libpq`",
-  "author": "Brian M. Carlson",
+  "author": "Juit Developers <developers@juit.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/juitnow/juit-libpq.git"
+  },
+  "scripts": {
+    "build": "./.github/build.sh"
+  },
+  "bugs": {
+    "url": "https://github.com/juitnow/juit-libpq/issues"
+  },
+  "homepage": "https://github.com/juitnow/juit-libpq#readme",
   "devDependencies": {
     "async": "^3.2.6",
     "buffer-from": "^1.1.2",

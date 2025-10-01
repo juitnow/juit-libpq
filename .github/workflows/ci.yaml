@@ -164,7 +164,7 @@ jobs:
     steps:
       - name: Close Release
         run: |
-          gh release delete "v${PACKAGE_VERSION}" --yes --cleanup-tag
+          gh release delete "v${PACKAGE_VERSION}" --yes
         env:
           GH_TOKEN: ${{ github.token }}
           PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}

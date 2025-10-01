@@ -1,54 +1,30 @@
 {
-  'conditions': [
-    ['OS=="linux"', {
-      'variables' : {
-        # Find the pull path to the pg_config command, since iy may not be on the PATH
-        'pgconfig': '<!(which pg_config || find /usr/bin /usr/local/bin /usr/pg* /opt -executable -name pg_config -print -quit)'
-      }
-    }, {
-      #Default to assuming pg_config is on the PATH.
-      'variables': {
-        'pgconfig': 'pg_config'
-      },
-    }]
-  ],
   'targets': [
     {
-      'target_name': 'addon',
+      'target_name': 'libpq',
       'sources': [
         'src/connection.cc',
         'src/connect-async-worker.cc',
         'src/addon.cc'
       ],
       'include_dirs': [
-        '<!@(<(pgconfig) --includedir)',
-        '<!(node -e "require(\'nan\')")'
+        '<!(node -e "require(\'nan\')")',
+        'dist/include'
       ],
+      'libraries': [
+        '../dist/lib/libpgcommon_shlib.a',
+        '../dist/lib/libpgport_shlib.a',
+        '../dist/lib/libpq.a',
+      ],
+      'ldflags': [ '<!@(./dist/bin/pg_config --ldflags)' ],
       'conditions' : [
         ['OS=="linux"', {
             'cflags': ['-fvisibility=hidden']
         }],
-        ['OS=="win"', {
-          'libraries' : ['ws2_32.lib','secur32.lib','crypt32.lib','wsock32.lib','msvcrt.lib','libpq.lib'],
-          'msvs_settings': {
-            'VCLinkerTool' : {
-              'AdditionalLibraryDirectories' : [
-                '<!@(<(pgconfig) --libdir)\\'
-              ]
-            },
-          },
-          'include_dirs': [
-            '<!(<(pgconfig) --includedir)',
-            '<!(node -e "require(\'nan\')")'
-          ]
-        }, { # OS!="win"
-          'libraries' : ['-lpq -L<!@(<(pgconfig) --libdir)'],
-          'ldflags' : ['<!@(<(pgconfig) --ldflags)']
-        }],
         ['OS=="mac"', {
           'xcode_settings': {
             'CLANG_CXX_LIBRARY': 'libc++',
-            'MACOSX_DEPLOYMENT_TARGET': '10.7'
+            'MACOSX_DEPLOYMENT_TARGET': '11.0'
           }
         }]
       ]

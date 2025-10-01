@@ -31,6 +31,8 @@ jobs:
           PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
           gh release create "v${PACKAGE_VERSION}" --draft --generate-notes
           echo "version=${PACKAGE_VERSION}" >> "${GITHUB_OUTPUT}"
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   # ============================================================================
   # Build and Test on Linux
@@ -72,12 +74,13 @@ jobs:
           npm run build
           gh release upload "v${PACKAGE_VERSION}" ./package/*.tgz
         env:
+          GH_TOKEN: ${{ github.token }}
           PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}
-          PGTESTNOSSL: true
-          PGUSER: postgres
+          PGDATABASE: ci_db_test
           PGHOST: localhost
           PGPASSWORD: postgres
-          PGDATABASE: ci_db_test
+          PGTESTNOSSL: true
+          PGUSER: postgres
 
   # ============================================================================
   # Build and Test on MacOS
@@ -108,4 +111,5 @@ jobs:
           npm run build
           gh release upload "v${PACKAGE_VERSION}" ./package/*.tgz
         env:
+          GH_TOKEN: ${{ github.token }}
           PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}

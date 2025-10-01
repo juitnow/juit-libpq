@@ -1,17 +1,15 @@
-var PQ = (module.exports = require('bindings')('addon.node').PQ);
-var assert = require('assert');
+'use strict';
 
-//print out the include dir
-//if you want to include this in a binding.gyp file
-if (!module.parent) {
-  var path = require('path');
-  console.log(path.normalize(__dirname + '/src'));
-}
+const platform = process.platform;
+const arch = process.arch;
+const node = process.versions.node.split(".")[0];
 
-var EventEmitter = require('events').EventEmitter;
-var assert = require('assert');
+const PQ = module.exports = (require(`@juit/libpq-${platform}-${arch}-node${node}`)).PQ;
+const assert = require('assert');
 
-for (var key in EventEmitter.prototype) {
+const EventEmitter = require('events').EventEmitter;
+
+for (const key in EventEmitter.prototype) {
   PQ.prototype[key] = EventEmitter.prototype[key];
 }
 
@@ -22,9 +20,9 @@ PQ.prototype.connectSync = function (paramString) {
   if (!paramString) {
     paramString = '';
   }
-  var connected = this.$connectSync(paramString);
+  const connected = this.$connectSync(paramString);
   if (!connected) {
-    var err = new Error(this.errorMessage());
+    const err = new Error(this.errorMessage());
     this.finish();
     throw err;
   }

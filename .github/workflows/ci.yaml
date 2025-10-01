@@ -81,7 +81,7 @@ jobs:
           npm clean-install --ignore-scripts
           npm run build
           npm run test
-          gh release upload "v${PACKAGE_VERSION}" ./package/*.tgz
+          gh release upload "v${PACKAGE_VERSION}" "./juit-libpq-"*"${PACKAGE_VERSION}.tgz"
         env:
           GH_TOKEN: ${{ github.token }}
           PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}
@@ -139,7 +139,7 @@ jobs:
           npm clean-install --ignore-scripts
           npm run build
           npm run test
-          gh release upload "v${PACKAGE_VERSION}" ./package/*.tgz
+          gh release upload "v${PACKAGE_VERSION}" "./juit-libpq-"*"${PACKAGE_VERSION}.tgz"
         env:
           GH_TOKEN: ${{ github.token }}
           PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}

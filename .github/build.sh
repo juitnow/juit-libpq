@@ -126,10 +126,10 @@ tar -zxf "./postgresql-${POSTGRESQL_VERSION}.tar.gz"
 
 ./node_modules/.bin/node-gyp rebuild
 
-rm -rf "package"
-mkdir "package"
-cp ./build/Release/libpq.node ./package/libpq.node
-cat > ./package/package.json <<EOF
+rm -rf "./package"
+mkdir "./package"
+cp "./build/Release/libpq.node" "./package/libpq.node"
+cat > "./package/package.json" <<EOF
 {
   "name": "@juit/libpq-${NODE_PLATFORM}-${NODE_ARCH}-node${NODE_MAJOR_VERSION}",
   "description": "Node.js bindings for libpq",
@@ -144,4 +144,4 @@ cat > ./package/package.json <<EOF
 }
 EOF
 
-(cd "package" && npm pack)
+npm pack "./package"

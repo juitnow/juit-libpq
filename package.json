@@ -6,7 +6,7 @@
   "description": "Staticly built `node-libpq`",
   "scripts": {
     "build": ".github/build.sh",
-    "test": "npm install --no-save ./package/juit-libpq-*.tgz && mocha --recursive test"
+    "test": "npm install --no-save ./juit-libpq-*.tgz && mocha --recursive test"
   },
   "author": "Juit Developers <developers@juit.com>",
   "license": "MIT",

@@ -17,16 +17,34 @@ export MACOSX_DEPLOYMENT_TARGET
 
 # ===== Platform and Architecture ==============================================
 
+readonly NODE_VERSION="$(node -p 'process.versions.node')"
+readonly NODE_MAJOR_VERSION="$(node -p 'process.versions.node.split(".")[0]')"
+readonly NODE_MODULE_VERSION="$(node -p 'process.versions.modules')"
 readonly NODE_PLATFORM="$(node -p 'process.platform')"
 readonly NODE_ARCH="$(node -p 'process.arch')"
 readonly NODE_OS="${NODE_PLATFORM}-${NODE_ARCH}"
 readonly NODE_INCLUDE_DIR="$(node -p 'path.resolve(process.execPath, "..", "..", "include", "node")')"
 
-# ===== OpenSSL Build ==========================================================
-
 # Figure out the OpenSSL version to build (the RE is to extract the "x.y.z" part
 # when NodeJS reports something like "3.0.15+quic").
-OPENSSL_VERSION="$(node -p 'process.versions.openssl.match(/\d+\.\d+\.\d+/)[0]')"
+readonly OPENSSL_VERSION="$(node -p 'process.versions.openssl.match(/\d+\.\d+\.\d+/)[0]')"
+
+echo "========================================================================="
+echo "  Building @juit/libpq"
+echo "========================================================================="
+echo "  NodeJS Version:        ${NODE_VERSION}"
+echo "  NodeJS Major Version:  ${NODE_MAJOR_VERSION}"
+echo "  NodeJS Module Version: ${NODE_MODULE_VERSION}"
+echo "  NodeJS Platform:       ${NODE_PLATFORM}"
+echo "  NodeJS Architecture:   ${NODE_ARCH}"
+echo "  NodeJS OS:             ${NODE_OS}"
+echo "  NodeJS Include Dir:    ${NODE_INCLUDE_DIR}"
+echo "  OpenSSL Version:       ${OPENSSL_VERSION}"
+echo "  PostgreSQL Version:    ${POSTGRESQL_VERSION}"
+echo "  Install Prefix:        ${PREFIX}"
+echo "========================================================================="
+
+# ===== OpenSSL Build ==========================================================
 
 # Download OpenSSL and expand it
 rm -rf "./openssl-${OPENSSL_VERSION}"

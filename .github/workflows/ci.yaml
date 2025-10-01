@@ -47,6 +47,7 @@ jobs:
           ./build.sh
 
         env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
           PGTESTNOSSL: true
           PGUSER: postgres
           PGHOST: localhost
@@ -80,3 +81,5 @@ jobs:
         run: |
           npm clean-install --ignore-scripts
           ./build.sh
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}

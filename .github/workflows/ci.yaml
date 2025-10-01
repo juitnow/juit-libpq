@@ -98,7 +98,7 @@ jobs:
     strategy:
       matrix:
         node: [20.x, 22.x, 24.x]
-        os: [macos-15, macos-15-intel]
+        os: [macos-latest]
 
     name: Node ${{ matrix.node }} [${{ matrix.os }}]
     runs-on: ${{ matrix.os }}

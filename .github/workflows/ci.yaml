@@ -8,6 +8,28 @@ on:
 
 jobs:
   # ============================================================================
+  # Create the release for uploading the various packages
+  # ----------------------------------------------------------------------------
+  # We start by creating a "draft" release at the beginning of the process.
+  # The "build-linux" and "build-macos" jobs will then upload their built
+  # packages to that release as artifacts.
+  # ============================================================================
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.create-release.outputs.version }}
+
+    steps:
+      - name: Create Draft Release
+        id: create-release
+        run: |
+          PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
+          gh release create "v${PACKAGE_VERSION}" --draft --generate-notes
+          echo "version=${PACKAGE_VERSION}" >> "${GITHUB_OUTPUT}"
+
+  # ============================================================================
   # Build and Test on Linux
   # ============================================================================
   build-linux:
@@ -17,12 +39,12 @@ jobs:
         os: [ubuntu-24.04, ubuntu-24.04-arm]
 
     name: Node ${{ matrix.node }} [${{ matrix.os }}]
-
     runs-on: ${{ matrix.os }}
+    needs: create-release
 
     services:
       postgres:
-        image: postgres:11
+        image: postgres:14
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -45,9 +67,9 @@ jobs:
         run: |
           npm clean-install --ignore-scripts
           ./build.sh
-
+          gh release upload "v${PACKAGE_VERSION}" ./package/*.tgz
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}
           PGTESTNOSSL: true
           PGUSER: postgres
           PGHOST: localhost
@@ -64,8 +86,8 @@ jobs:
         os: [macos-15, macos-15-intel]
 
     name: Node ${{ matrix.node }} [${{ matrix.os }}]
-
     runs-on: ${{ matrix.os }}
+    needs: create-release
 
     steps:
       - name: Checkout Repository
@@ -81,5 +103,6 @@ jobs:
         run: |
           npm clean-install --ignore-scripts
           ./build.sh
+          gh release upload "v${PACKAGE_VERSION}" ./package/*.tgz
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}

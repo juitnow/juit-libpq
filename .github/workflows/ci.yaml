@@ -115,8 +115,23 @@ jobs:
 
       - name: Build Library
         run: |
+          # Install Postgres and run it
           brew install postgresql
           brew services start postgresql
+
+          # Wait until Postgres is ready
+          for i in $(seq 1 5); do
+              if pg_isready -q -t 5; then break; fi
+              sleep 10
+          done
+
+          # Final check
+          if ! pg_isready -q -t 5; then
+              echo "Postgres is not ready after 5 attempts"
+              exit 1
+          fi
+
+          # Create the test database
           createdb ci_db_test
 
           npm clean-install --ignore-scripts

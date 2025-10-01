@@ -3,7 +3,7 @@
     {
       # Node-GYP strips the first "lib" for some reason, so here
       # "liblibpq" is _intentional_, as it will produce a module
-      # called "libpq.node" in "./build/Release" 
+      # called "libpq.node" in "./build/Release"
       'target_name': 'liblibpq',
       'sources': [
         'src/connection.cc',
@@ -15,9 +15,10 @@
         'dist/include'
       ],
       'libraries': [
-        '../dist/lib/libpgcommon_shlib.a',
-        '../dist/lib/libpgport_shlib.a',
+        # Order matters here, libpq depends on libpgport and libpgcommon
         '../dist/lib/libpq.a',
+        '../dist/lib/libpgport_shlib.a',
+        '../dist/lib/libpgcommon_shlib.a',
       ],
       'ldflags': [ '<!@(./dist/bin/pg_config --ldflags)' ],
       'conditions' : [

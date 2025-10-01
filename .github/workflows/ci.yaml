@@ -7,13 +7,16 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  # ============================================================================
+  # Build and Test on Linux
+  # ============================================================================
+  build-linux:
     strategy:
       matrix:
         node: [20.x, 22.x, 24.x]
-        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
 
-    name: Build on Node.js ${{ matrix.node }} / ${{ matrix.os }}
+    name: Node ${{ matrix.node }} [${{ matrix.os }}]
 
     runs-on: ${{ matrix.os }}
 
@@ -49,3 +52,31 @@ jobs:
           PGHOST: localhost
           PGPASSWORD: postgres
           PGDATABASE: ci_db_test
+
+  # ============================================================================
+  # Build and Test on MacOS
+  # ============================================================================
+  build-macos:
+    strategy:
+      matrix:
+        node: [20.x, 22.x, 24.x]
+        os: [macos-15, macos-15-intel]
+
+    name: Node ${{ matrix.node }} [${{ matrix.os }}]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          registry-url: https://registry.npmjs.org
+          node-version: ${{ matrix.node }}
+
+      - name: Build Library
+        run: |
+          npm clean-install --ignore-scripts
+          ./build.sh

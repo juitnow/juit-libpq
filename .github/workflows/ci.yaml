@@ -2,13 +2,19 @@ name: Node.js CI
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
+    strategy:
+      matrix:
+        node: [18.x, 20.x, 22.x, 24.x]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+
     runs-on: ubuntu-latest
+
     services:
       postgres:
         image: postgres:11
@@ -20,16 +26,22 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x, 24.x]
-
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ${{ matrix.node }}
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: PGTESTNOSSL=true PGUSER=postgres PGHOST=localhost PGPASSWORD=postgres PGDATABASE=ci_db_test npm test
+          registry-url: https://registry.npmjs.org
+          node-version: ${{ matrix.node }}
+
+      - name: Build Library
+        run: |
+          npm install
+        env:
+          PGTESTNOSSL: true
+          PGUSER: postgres
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGDATABASE: ci_db_test

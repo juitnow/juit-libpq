@@ -8,8 +8,8 @@ readonly PREFIX="${PWD}/dist"
 
 # ===== Platform and Architecture ==============================================
 
-# Our version
-readonly PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
+# Our version (should be defined outside, defaulting to the one in package.json)
+readonly PACKAGE_VERSION="${PACKAGE_VERSION:-$(node -p 'require("./package.json").version')}"
 # PostgreSQL version to build
 readonly POSTGRESQL_VERSION="$(node -p 'require("./package.json").postgresql_version')"
 
@@ -76,15 +76,15 @@ case "${NODE_OS}" in
 esac
 
 # Build OpenSSL and install the binaries/headers
-cd "./openssl-${OPENSSL_VERSION}"
-./Configure --prefix="${PREFIX}" \
-  --openssldir=/etc/ssl \
-  ${OPENSSL_TARGET}
+(
+  cd "./openssl-${OPENSSL_VERSION}"
+  ./Configure --prefix="${PREFIX}" \
+    --openssldir=/etc/ssl \
+    ${OPENSSL_TARGET}
 
-make
-make install_sw
-
-cd "${BASEDIR}"
+  make
+  make install_sw
+)
 
 # ===== PostgreSQL Build =======================================================
 
@@ -94,33 +94,33 @@ curl -LO "https://ftp.postgresql.org/pub/source/v${POSTGRESQL_VERSION}/postgresq
 tar -zxf "./postgresql-${POSTGRESQL_VERSION}.tar.gz"
 
 # Build PostgreSQL and install the binaries/headers for LibPQ only
-cd "./postgresql-${POSTGRESQL_VERSION}"
-LDFLAGS="-L${PREFIX}/lib" \
-./configure --prefix="${PREFIX}" \
-  --with-includes="${NODE_INCLUDE_DIR}" \
-  --enable-thread-safety \
-  --with-openssl \
-  --without-libxml \
-  --without-libxslt \
-  --without-python \
-  --without-readline \
-  --without-icu \
-  --without-lz4 \
-  --without-zstd
+(
+  cd "./postgresql-${POSTGRESQL_VERSION}"
+  LDFLAGS="-L${PREFIX}/lib" \
+  ./configure --prefix="${PREFIX}" \
+    --with-includes="${NODE_INCLUDE_DIR}" \
+    --enable-thread-safety \
+    --with-openssl \
+    --without-libxml \
+    --without-libxslt \
+    --without-python \
+    --without-readline \
+    --without-icu \
+    --without-lz4 \
+    --without-zstd
 
-make -C "./src/include"
-make -C "./src/common"
-make -C "./src/port"
-make -C "./src/interfaces/libpq"
-make -C "./src/bin/pg_config"
+  make -C "./src/include"
+  make -C "./src/common"
+  make -C "./src/port"
+  make -C "./src/interfaces/libpq"
+  make -C "./src/bin/pg_config"
 
-make -C "./src/include" install
-make -C "./src/common" install
-make -C "./src/port" install
-make -C "./src/interfaces/libpq" install
-make -C "./src/bin/pg_config" install
-
-cd "${BASEDIR}"
+  make -C "./src/include" install
+  make -C "./src/common" install
+  make -C "./src/port" install
+  make -C "./src/interfaces/libpq" install
+  make -C "./src/bin/pg_config" install
+)
 
 # ===== Final Node "libpq" build ===============================================
 
@@ -144,6 +144,4 @@ cat > ./package/package.json <<EOF
 }
 EOF
 
-cd "package"
-npm publish --access=public
-cd "${BASEDIR}"
+(cd "package" && npm pack)

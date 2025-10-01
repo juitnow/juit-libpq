@@ -1,11 +1,12 @@
 {
   "name": "@juit/libpq-build",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "postgresql_version": "16.10",
   "private": true,
   "description": "Staticly built `node-libpq`",
   "scripts": {
-    "build": ".github/build.sh"
+    "build": ".github/build.sh",
+    "test": "npm install --no-save ./package/juit-libpq-*.tgz && mocha --recursive test"
   },
   "author": "Juit Developers <developers@juit.com>",
   "license": "MIT",

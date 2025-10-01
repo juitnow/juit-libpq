@@ -146,3 +146,25 @@ jobs:
           # PGPASSWORD: postgres (no password for brew)
           PGTESTNOSSL: true
           # PGUSER: postgres (no user for brew, uses current user)
+
+  # ============================================================================
+  # Drop a release if one of the builds failed
+  # ============================================================================
+  clean-release:
+    name: Drop Release
+    runs-on: ubuntu-latest
+    needs: [create-release, build-linux, build-macos]
+    if: >
+      ${{ always() &&
+          needs.create-release.result == 'success' && (
+            needs.build-linux.result == 'failure' ||
+            needs.build-macos.result == 'failure'
+      ) }}
+
+    steps:
+      - name: Close Release
+        run: |
+          gh release delete "v${PACKAGE_VERSION}" --yes --cleanup-tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}

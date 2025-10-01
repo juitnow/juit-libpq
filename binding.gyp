@@ -1,7 +1,10 @@
 {
   'targets': [
     {
-      'target_name': 'libpq',
+      # Node-GYP strips the first "lib" for some reason, so here
+      # "liblibpq" is _intentional_, as it will produce a module
+      # called "libpq.node" in "./build/Release" 
+      'target_name': 'liblibpq',
       'sources': [
         'src/connection.cc',
         'src/connect-async-worker.cc',

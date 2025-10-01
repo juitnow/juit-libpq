@@ -29,6 +29,9 @@ jobs:
         id: create-release
         run: |
           PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
+
+          gh release view "v${PACKAGE_VERSION}" && exit 1 || false
+
           gh release create "v${PACKAGE_VERSION}" --draft --generate-notes
           echo "version=${PACKAGE_VERSION}" >> "${GITHUB_OUTPUT}"
         env:

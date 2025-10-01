@@ -91,6 +91,25 @@ NAN_METHOD(Connection::ServerVersion) {
   info.GetReturnValue().Set(PQserverVersion(self->pq));
 }
 
+NAN_METHOD(Connection::LibPQVersion) {
+  TRACE("Connection::LibPQVersion");
+
+  int version = PQlibVersion();
+  int major_version = version / 10000;
+  int minor_version = version % 10000;
+
+  std::ostringstream oss;
+  oss << major_version << "." << minor_version;
+  std::string version_string = oss.str();
+
+  info.GetReturnValue().Set(Nan::New(version_string).ToLocalChecked());
+}
+
+NAN_METHOD(Connection::OpenSSLVersion) {
+  TRACE("Connection::OpenSSLVersion");
+  const char *version = OpenSSL_version(OPENSSL_FULL_VERSION_STRING);
+  info.GetReturnValue().Set(Nan::New(version).ToLocalChecked());
+}
 
 NAN_METHOD(Connection::Exec) {
   Connection *self = NODE_THIS();

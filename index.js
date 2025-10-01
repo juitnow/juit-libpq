@@ -396,3 +396,12 @@ PQ.prototype.getCopyData = function (async) {
 PQ.prototype.cancel = function () {
   return this.$cancel();
 };
+
+// Static version numbers
+Object.defineProperty(PQ.prototype, 'versions', {
+  get: function () {
+    const libpq = this.$libPQVersion();
+    const openssl = this.$openSSLVersion();
+    return { libpq, openssl };
+  }
+});

@@ -3,6 +3,8 @@
 
 #include <nan.h>
 #include <libpq-fe.h>
+#include <openssl/crypto.h>
+#include <sstream>
 
 class Connection : public Nan::ObjectWrap {
   public:
@@ -10,6 +12,8 @@ class Connection : public Nan::ObjectWrap {
     static NAN_METHOD(ConnectSync);
     static NAN_METHOD(Connect);
     static NAN_METHOD(ServerVersion);
+    static NAN_METHOD(LibPQVersion);
+    static NAN_METHOD(OpenSSLVersion);
     static NAN_METHOD(Socket);
     static NAN_METHOD(GetLastErrorMessage);
     static NAN_METHOD(Finish);

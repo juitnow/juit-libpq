@@ -49,7 +49,7 @@ echo "========================================================================="
 # Download OpenSSL and expand it
 rm -rf "./openssl-${OPENSSL_VERSION}"
 curl -LO "https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz"
-tar -zxvf "./openssl-${OPENSSL_VERSION}.tar.gz"
+tar -zxf "./openssl-${OPENSSL_VERSION}.tar.gz"
 
 # OpenSSL build target
 case "${NODE_OS}" in
@@ -87,7 +87,7 @@ cd "${BASEDIR}"
 # Download PostgreSQL and expand it
 rm -rf "./postgresql-${POSTGRESQL_VERSION}"
 curl -LO "https://ftp.postgresql.org/pub/source/v${POSTGRESQL_VERSION}/postgresql-${POSTGRESQL_VERSION}.tar.gz"
-tar -zxvf "./postgresql-${POSTGRESQL_VERSION}.tar.gz"
+tar -zxf "./postgresql-${POSTGRESQL_VERSION}.tar.gz"
 
 # Build PostgreSQL and install the binaries/headers for LibPQ only
 cd "./postgresql-${POSTGRESQL_VERSION}"

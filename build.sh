@@ -6,17 +6,14 @@ mkdir -p "${PWD}/dist"
 readonly BASEDIR="${PWD}"
 readonly PREFIX="${PWD}/dist"
 
-# ===== Environment Setup ======================================================
-
-# The PostgreSQL version to build
-readonly POSTGRESQL_VERSION=16.10
-
-# On macOS, target only Big Sur (11.0) and later (M1 support)
-readonly MACOSX_DEPLOYMENT_TARGET=11.0
-export MACOSX_DEPLOYMENT_TARGET
-
 # ===== Platform and Architecture ==============================================
 
+# Our version
+readonly PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
+# PostgreSQL version to build
+readonly POSTGRESQL_VERSION="$(node -p 'require("./package.json").postgresql_version')"
+
+# Variables derived from the current NodeJS installation
 readonly NODE_VERSION="$(node -p 'process.versions.node')"
 readonly NODE_MAJOR_VERSION="$(node -p 'process.versions.node.split(".")[0]')"
 readonly NODE_MODULE_VERSION="$(node -p 'process.versions.modules')"
@@ -42,7 +39,14 @@ echo "  NodeJS Include Dir:    ${NODE_INCLUDE_DIR}"
 echo "  OpenSSL Version:       ${OPENSSL_VERSION}"
 echo "  PostgreSQL Version:    ${POSTGRESQL_VERSION}"
 echo "  Install Prefix:        ${PREFIX}"
+echo "  Package Version:       ${PACKAGE_VERSION}"
 echo "========================================================================="
+
+# ===== Build Environment Setup ================================================
+
+# On macOS, target only Big Sur (11.0) and later (M1 support)
+readonly MACOSX_DEPLOYMENT_TARGET=11.0
+export MACOSX_DEPLOYMENT_TARGET
 
 # ===== OpenSSL Build ==========================================================
 
@@ -121,4 +125,25 @@ cd "${BASEDIR}"
 # ===== Final Node "libpq" build ===============================================
 
 ./node_modules/.bin/node-gyp rebuild
-ls -la ./build/Release/libpq.node
+
+rm -rf "package"
+mkdir "package"
+cp ./build/Release/libpq.node ./package/libpq.node
+cat > ./package/package.json <<EOF
+{
+  "name": "@juit/libpq-${NODE_PLATFORM}-${NODE_ARCH}-node${NODE_MAJOR_VERSION}",
+  "description": "Node.js bindings for libpq",
+  "version": "${PACKAGE_VERSION}",
+  "license": "MIT",
+  "homepage": "https://github.com/juitnow/juit-libpq",
+  "main": "libpq.node",
+  "engines": { "node": "${NODE_MAJOR_VERSION}" },
+  "os": [ "${NODE_PLATFORM}" ],
+  "cpu": [ "${NODE_ARCH}" ],
+  "files": [ "libpq.node" ]
+}
+EOF
+
+cd "package"
+npm publish --access=public
+cd "${BASEDIR}"

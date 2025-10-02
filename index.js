@@ -408,10 +408,9 @@ try {
   PQ.prototype.cancel = function () {
     return this.$cancel();
   };
-} catch (error) {
+} catch {
   // Warn out that we weren't able to load the binary module
-  const detail = error.stack || error.message || error.toString()
-  process.emitWarning(`Failed to load "${library}", falling back to "libpq"`, { detail})
+  process.emitWarning(`Failed to load "${library}", falling back to "libpq"`)
 
   // Fallback to the original "libpq" package
   const PQ = require("libpq")

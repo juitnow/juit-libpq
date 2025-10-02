@@ -28,5 +28,11 @@
   "files": [
     "index.js",
     "index.d.ts"
+  ],
+  "keywords": [
+    "postgres",
+    "postgresql",
+    "libpq",
+    "node-libpq"
   ]
 }

@@ -22,15 +22,12 @@ jobs:
       version: ${{ steps.create-release.outputs.version }}
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
       - name: Create Draft Release
         id: create-release
         run: |
           PACKAGE_VERSION="$(node -p 'require("./package.json").version')"
 
-          gh release view "v${PACKAGE_VERSION}" && {
+          gh release view "v${PACKAGE_VERSION}" --repo ${{ github.repository }} && {
             echo "Release v${PACKAGE_VERSION} already exists!"
             echo "::error::Release \"v${PACKAGE_VERSION}\" already exists!"
             exit 1
@@ -155,26 +152,48 @@ jobs:
           # PGUSER: postgres (no user for brew, uses current user)
 
   # ============================================================================
-  # Delete a release if one of the builds failed
+  # Build the meta-package if all native builds succeeded
   # ============================================================================
-  delete-release:
-    name: Drop Release
+  build-metapackage:
+    name: Build Meta Package
     runs-on: ubuntu-latest
+    # This depends on both build jobs, and "drop-release" depends on this one
+    # so that if this fails, we can drop the release (simplifies conditions).
     needs: [create-release, build-linux, build-macos]
-    if: ${{ always() && needs.create-release.result == 'success' && ( needs.build-linux.result != 'success' || needs.build-macos.result != 'success' ) }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Build Meta Package
+        run: |
+          exit 1
+
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}
+
+  # ============================================================================
+  # Delete a release if one of the builds failed
+  # ============================================================================
+  delete-release:
+    name: Drop Release
+    runs-on: ubuntu-latest
+    needs: [create-release, build-linux, build-macos, build-metapackage]
+    # The release was created, but one of the native builds failed (this is
+    # inherited from "build-metapackage"). In this case we delete the release!
+    if: ${{ always() && needs.create-release.result == 'success' && needs.build-metapackage.result != 'success' }}
+
+    steps:
       - name: Delete Release
         run: |
           echo "Cause of failure:"
-          echo "  create-release = ${{ needs.create-release.result }}"
-          echo "  build-linux    = ${{ needs.build-linux.result }}"
-          echo "  build-macos    = ${{ needs.build-macos.result }}"
+          echo "  create-release    = ${{ needs.create-release.result }}"
+          echo "  build-linux       = ${{ needs.build-linux.result }}"
+          echo "  build-macos       = ${{ needs.build-macos.result }}"
+          echo "  build-metapackage = ${{ needs.build-metapackage.result }}"
 
-          gh release delete "v${PACKAGE_VERSION}" --yes
+          gh release delete "v${PACKAGE_VERSION}" --yes --repo ${{ github.repository }}
           echo "::warning::Release \"v${PACKAGE_VERSION}\" deleted"
         env:
           GH_TOKEN: ${{ github.token }}

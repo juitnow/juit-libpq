@@ -161,7 +161,7 @@ jobs:
     name: Drop Release
     runs-on: ubuntu-latest
     needs: [create-release, build-linux, build-macos]
-    if: ${{ needs.create-release.result == 'success' && ( needs.build-linux.result != 'success' || needs.build-macos.result != 'success' ) }}
+    if: ${{ always() && needs.create-release.result == 'success' && ( needs.build-linux.result != 'success' || needs.build-macos.result != 'success' ) }}
 
     steps:
       - name: Checkout Repository

@@ -170,8 +170,12 @@ jobs:
 
       - name: Build Meta Package
         run: |
-          exit 1
+          mkdir "package"
+          cat "package-meta.json" | sed "s|@@VERSION@@|${PACKAGE_VERSION}|g" > "package/package.json"
+          cp "index.js" "index.d.ts" "README.md" "package"
+          npm pack "./package"
 
+          gh release upload "v${PACKAGE_VERSION}" "./juit-libpq-${PACKAGE_VERSION}.tgz"
         env:
           GH_TOKEN: ${{ github.token }}
           PACKAGE_VERSION: ${{ needs.create-release.outputs.version }}

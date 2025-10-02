@@ -1,0 +1,32 @@
+{
+  "name": "@juit/libpq",
+  "version": "@@VERSION@@",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "optionalDependencies": {
+    "@juit/libpq-darwin-arm64-node20": "@@VERSION@@",
+    "@juit/libpq-darwin-arm64-node22": "@@VERSION@@",
+    "@juit/libpq-darwin-arm64-node24": "@@VERSION@@",
+    "@juit/libpq-linux-arm64-node20": "@@VERSION@@",
+    "@juit/libpq-linux-arm64-node22": "@@VERSION@@",
+    "@juit/libpq-linux-arm64-node24": "@@VERSION@@",
+    "@juit/libpq-linux-x64-node20": "@@VERSION@@",
+    "@juit/libpq-linux-x64-node22": "@@VERSION@@",
+    "@juit/libpq-linux-x64-node24": "@@VERSION@@"
+  },
+  "author": "Juit Developers <developers@juit.com>",
+  "description": "Statically built `node-libpq`",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/juitnow/juit-libpq.git"
+  },
+  "bugs": {
+    "url": "https://github.com/juitnow/juit-libpq/issues"
+  },
+  "homepage": "https://github.com/juitnow/juit-libpq#readme",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ]
+}

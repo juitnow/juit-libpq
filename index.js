@@ -5,6 +5,7 @@ const platform = process.platform;
 const arch = process.arch;
 const node = process.versions.node.split(".")[0];
 const library = `@juit/libpq-${platform}-${arch}-node${node}`;
+const libpq = 'libpq'; // as a variable to please bundlers
 
 try {
   // Require the pre-compiled version of "@juit/libpq"
@@ -410,10 +411,10 @@ try {
   };
 } catch {
   // Warn out that we weren't able to load the binary module
-  process.emitWarning(`Failed to load "${library}", falling back to "libpq"`)
+  process.emitWarning(`Failed to load "${library}", falling back to "${libpq}"`)
 
   // Fallback to the original "libpq" package
-  const PQ = require("libpq")
+  const PQ = require(libpq)
   PQ.prototype.versions = { libpq: 'native', openssl: 'native' }
   module.exports = PQ
 }

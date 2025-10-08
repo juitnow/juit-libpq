@@ -73,7 +73,9 @@ NAN_METHOD(Connection::Finish) {
 
   self->ReadStop();
   if (self->is_success_poll_init) {
-    uv_close((uv_handle_t*) &self->poll_watcher, NULL);
+    if (! uv_is_closing((uv_handle_t*) &self->poll_watcher)) {
+      uv_close((uv_handle_t*) &self->poll_watcher, NULL);
+    }
     self->is_success_poll_init = false;
   }
   self->ClearLastResult();

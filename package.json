@@ -1,6 +1,6 @@
 {
   "name": "@juit/libpq-build",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "postgresql_version": "16.10",
   "private": true,
   "description": "Staticly built `node-libpq`",

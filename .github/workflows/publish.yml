@@ -5,10 +5,9 @@ on:
   release:
     types: [published]
 
-
 permissions:
   id-token: write
-  contents: read
+  contents: write
   actions: read
 
 jobs:
@@ -45,15 +44,15 @@ jobs:
           test -f "./juit-libpq-${PACKAGE_VERSION}.tgz" || exit 1
 
           # Publish them all (if something fails, we can recover manually)
-          npm publish "./juit-libpq-darwin-arm64-node20-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-darwin-arm64-node22-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-darwin-arm64-node24-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-linux-arm64-node20-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-linux-arm64-node22-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-linux-arm64-node24-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-linux-x64-node20-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-linux-x64-node22-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-linux-x64-node24-${PACKAGE_VERSION}.tgz"
-          npm publish "./juit-libpq-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-darwin-arm64-node20-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-darwin-arm64-node22-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-darwin-arm64-node24-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-linux-arm64-node20-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-linux-arm64-node22-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-linux-arm64-node24-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-linux-x64-node20-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-linux-x64-node22-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-linux-x64-node24-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-${PACKAGE_VERSION}.tgz"
         env:
           GH_TOKEN: ${{ github.token }}

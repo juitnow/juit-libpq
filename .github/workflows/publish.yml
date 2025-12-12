@@ -57,4 +57,3 @@ jobs:
           npm publish "./juit-libpq-${PACKAGE_VERSION}.tgz"
         env:
           GH_TOKEN: ${{ github.token }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

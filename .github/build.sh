@@ -136,12 +136,31 @@ cat > "./package/package.json" <<EOF
   "version": "${PACKAGE_VERSION}",
   "license": "MIT",
   "homepage": "https://github.com/juitnow/juit-libpq",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/juitnow/juit-libpq.git"
+  },
+  "bugs": {
+    "url": "https://github.com/juitnow/juit-libpq/issues"
+  },
+  "homepage": "https://github.com/juitnow/juit-libpq#readme",
   "main": "libpq.node",
   "engines": { "node": "${NODE_MAJOR_VERSION}" },
   "os": [ "${NODE_PLATFORM}" ],
   "cpu": [ "${NODE_ARCH}" ],
   "files": [ "libpq.node" ]
 }
+EOF
+
+cat > "./package/README.md" <<EOF
+@juit/libpq
+===========
+
+Precompiled Node.js bindings for libpq (PostgreSQL client library) for
+${NODE_PLATFORM}-${NODE_ARCH} targeting Node.js ${NODE_MAJOR_VERSION}.
+
+See the main package [juit-libpq](https://github.com/juitnow/juit-libpq) for
+more information.
 EOF
 
 npm pack "./package"

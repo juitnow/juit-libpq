@@ -21,7 +21,7 @@
   "devDependencies": {
     "async": "^3.2.6",
     "buffer-from": "^1.1.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "mocha": "^11.7.5",
     "nan": "~2.24.0",
     "node-gyp": "^12.1.0",

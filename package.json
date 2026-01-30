@@ -1,7 +1,7 @@
 {
   "name": "@juit/libpq-build",
-  "version": "1.0.2",
-  "postgresql_version": "16.11",
+  "version": "1.1.0",
+  "postgresql_version": "18.1",
   "private": true,
   "description": "Staticly built `node-libpq`",
   "scripts": {
@@ -21,10 +21,10 @@
   "devDependencies": {
     "async": "^3.2.6",
     "buffer-from": "^1.1.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "mocha": "^11.7.5",
-    "nan": "~2.24.0",
-    "node-gyp": "^12.1.0",
+    "nan": "~2.25.0",
+    "node-gyp": "^12.2.0",
     "okay": "^1.0.0"
   }
 }

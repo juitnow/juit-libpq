@@ -1,5 +1,6 @@
 build/
 dist/
+juit-libpq-*.tgz
 node_modules/
 openssl-*
 package/

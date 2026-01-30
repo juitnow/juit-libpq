@@ -1,9 +1,7 @@
-name: Build Native Packages
+name: Build Release
 
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
 
 permissions:

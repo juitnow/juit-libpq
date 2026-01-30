@@ -1,0 +1,112 @@
+name: Build Pull Request
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  # ============================================================================
+  # Build and Test on Linux
+  # ============================================================================
+  build-linux:
+    strategy:
+      matrix:
+        node: [20.x, 22.x, 24.x]
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+
+    name: Node ${{ matrix.node }} [${{ matrix.os }}]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ci_db_test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          registry-url: https://registry.npmjs.org
+          node-version: ${{ matrix.node }}
+
+      - name: Build Library
+        run: |
+          npm clean-install --ignore-scripts
+          npm run build
+          npm run test
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PGDATABASE: ci_db_test
+          PGHOST: localhost
+          PGPASSWORD: postgres
+          PGTESTNOSSL: true
+          PGUSER: postgres
+
+  # ============================================================================
+  # Build and Test on MacOS
+  # ============================================================================
+  build-macos:
+    strategy:
+      matrix:
+        node: [20.x, 22.x, 24.x]
+        os: [macos-latest]
+
+    name: Node ${{ matrix.node }} [${{ matrix.os }}]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          registry-url: https://registry.npmjs.org
+          node-version: ${{ matrix.node }}
+
+      - name: Build Library
+        run: |
+          # Install Postgres and run it
+          brew install postgresql
+          brew services start postgresql
+
+          # Wait until Postgres is ready
+          for i in $(seq 1 5); do
+              if pg_isready -q -t 5; then break; fi
+              sleep 10
+          done
+
+          # Final check
+          if ! pg_isready -q -t 5; then
+              echo "Postgres is not ready after 5 attempts"
+              exit 1
+          fi
+
+          # Create the test database
+          createdb ci_db_test
+
+          npm clean-install --ignore-scripts
+          npm run build
+          npm run test
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PGDATABASE: ci_db_test
+          PGHOST: localhost
+          # PGPASSWORD: postgres (no password for brew)
+          PGTESTNOSSL: true
+          # PGUSER: postgres (no user for brew, uses current user)

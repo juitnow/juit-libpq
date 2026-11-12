@@ -50,7 +50,7 @@ jobs:
   build-linux:
     strategy:
       matrix:
-        node: [20.x, 22.x, 24.x]
+        node: [20.x, 22.x, 24.x, 26.x]
         os: [ubuntu-24.04, ubuntu-24.04-arm]
 
     name: Node ${{ matrix.node }} [${{ matrix.os }}]
@@ -100,7 +100,7 @@ jobs:
   build-macos:
     strategy:
       matrix:
-        node: [20.x, 22.x, 24.x]
+        node: [20.x, 22.x, 24.x, 26.x]
         os: [macos-latest]
 
     name: Node ${{ matrix.node }} [${{ matrix.os }}]

@@ -17,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup NodeJS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           registry-url: https://registry.npmjs.org
           node-version: '24'
@@ -34,27 +34,27 @@ jobs:
           gh release download "v${PACKAGE_VERSION}" --pattern "juit-libpq-*.tgz"
 
           # Make sure we have the right files (all or nothing!)
-          test -f "./juit-libpq-darwin-arm64-node20-${PACKAGE_VERSION}.tgz" || exit 1
           test -f "./juit-libpq-darwin-arm64-node22-${PACKAGE_VERSION}.tgz" || exit 1
           test -f "./juit-libpq-darwin-arm64-node24-${PACKAGE_VERSION}.tgz" || exit 1
-          test -f "./juit-libpq-linux-arm64-node20-${PACKAGE_VERSION}.tgz" || exit 1
+          test -f "./juit-libpq-darwin-arm64-node26-${PACKAGE_VERSION}.tgz" || exit 1
           test -f "./juit-libpq-linux-arm64-node22-${PACKAGE_VERSION}.tgz" || exit 1
           test -f "./juit-libpq-linux-arm64-node24-${PACKAGE_VERSION}.tgz" || exit 1
-          test -f "./juit-libpq-linux-x64-node20-${PACKAGE_VERSION}.tgz" || exit 1
+          test -f "./juit-libpq-linux-arm64-node26-${PACKAGE_VERSION}.tgz" || exit 1
           test -f "./juit-libpq-linux-x64-node22-${PACKAGE_VERSION}.tgz" || exit 1
           test -f "./juit-libpq-linux-x64-node24-${PACKAGE_VERSION}.tgz" || exit 1
+          test -f "./juit-libpq-linux-x64-node26-${PACKAGE_VERSION}.tgz" || exit 1
           test -f "./juit-libpq-${PACKAGE_VERSION}.tgz" || exit 1
 
           # Publish them all (if something fails, we can recover manually)
-          npm publish --provenance "./juit-libpq-darwin-arm64-node20-${PACKAGE_VERSION}.tgz"
           npm publish --provenance "./juit-libpq-darwin-arm64-node22-${PACKAGE_VERSION}.tgz"
           npm publish --provenance "./juit-libpq-darwin-arm64-node24-${PACKAGE_VERSION}.tgz"
-          npm publish --provenance "./juit-libpq-linux-arm64-node20-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-darwin-arm64-node26-${PACKAGE_VERSION}.tgz"
           npm publish --provenance "./juit-libpq-linux-arm64-node22-${PACKAGE_VERSION}.tgz"
           npm publish --provenance "./juit-libpq-linux-arm64-node24-${PACKAGE_VERSION}.tgz"
-          npm publish --provenance "./juit-libpq-linux-x64-node20-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-linux-arm64-node26-${PACKAGE_VERSION}.tgz"
           npm publish --provenance "./juit-libpq-linux-x64-node22-${PACKAGE_VERSION}.tgz"
           npm publish --provenance "./juit-libpq-linux-x64-node24-${PACKAGE_VERSION}.tgz"
+          npm publish --provenance "./juit-libpq-linux-x64-node26-${PACKAGE_VERSION}.tgz"
           npm publish --provenance "./juit-libpq-${PACKAGE_VERSION}.tgz"
         env:
           GH_TOKEN: ${{ github.token }}
